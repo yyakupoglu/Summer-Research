@@ -1,9 +1,5 @@
-clear all
-close all
-clc
-warning('off','all')
-global robot m N g
-% N stands for knotPoints in the middle
+function construct_robot();
+global robot N m g
 %% Parameters
 L1 = 1;
 L2 = 1;
@@ -14,11 +10,7 @@ m3=0.5;
 m=m1+m2+m3;
 r=0.01;
 g = 9.81;
-startTime=0;
-endTime=1;
-dt=0.001;
-t=startTime:dt:endTime;
-N=5;
+
 %% Create Bodies
 robot = robotics.RigidBodyTree('DataFormat','column','MaxNumBodies',4);
 body1 = robotics.RigidBody('link1');
@@ -36,7 +28,7 @@ body2 = robotics.RigidBody('link2');
 joint2 = robotics.Joint('joint2','revolute');
 setFixedTransform(joint2, trvec2tform([L1, 0, 0]));
 joint2.JointAxis = [0 0 1];
-joint2.HomePosition=0*pi/180;
+joint2.HomePosition=10*pi/180;
 body2.Joint = joint2;
 body2.Mass=1;
 body2.CenterOfMass=[L2/2 0 0];
@@ -63,15 +55,6 @@ body4.Inertia= [0 0 0 0 0 0];
 addBody(robot, body4, 'link3');
 
 
-robot.Gravity=[0  -9.81 0];
+robot.Gravity=[0  -g 0];
 disp('Robot Constructed')
-%% Optimization
-
-[xOpt,F,xMul,Fmul,INFO]=optimize2()
-save('xOpt_trial.mat','xOpt');
-xOpt1=xOpt(1:25)
-xOpt2=xOpt(26:50)
-xOpt3=xOpt(51:75)
-xOpt4=xOpt(76:100)
-xOpt5=xOpt(101:125)
-
+end

@@ -6,7 +6,7 @@ global robot m N g simTime
 n = 19; %decision variable
 gv= [0; -m*g; 0];
 [~,Jcom{1}] = centerOfMass(robot, robot.homeConfiguration);
-L=1000*eye(3);
+L=10000*eye(3);
 s = 3*5; % 3 dimension x 5 constraint equation in the for loop
 c=zeros((N-1)*s+1,1);
 

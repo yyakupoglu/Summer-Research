@@ -10,7 +10,7 @@ numState  = length(IC);
 [xLow, xUpp] = setStateBoundaries(numDecVar,IC,FC);
 
 
-usrfun = 'conscomdme';
+usrfun = 'conscomdmev2';
 conseqno=5; %how many constraint equations are there? check from cons file
 constraint_no= (N-1)*(3*conseqno)+1;
 

@@ -4,10 +4,10 @@ com_init_pos=init(1:3);
 com_init_vel=init(4:6);
 com_init_acc=init(7:9);
 com_final_pos=fin(1:3);
-%com_final_vel=fin(4:6);
-%com_final_acc=fin(7:9);
-com_final_vel=zeros(3,1);%fin(4:6);
-com_final_acc=zeros(3,1);%fin(7:9);
+com_final_vel=fin(4:6);
+com_final_acc=fin(7:9);
+%com_final_vel=zeros(3,1);%fin(4:6);
+%com_final_acc=zeros(3,1);%fin(7:9);
 tf=init(end); %simTime for 2 knotpoints
 
 

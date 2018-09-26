@@ -1,32 +1,34 @@
-function [trajKnots, xOpt] = optimizecomreddim()
+function [trajKnots, xOpt,F] = optimizecomdmev2()
 
 global robot m N g simTime
 
-IC = [robot.homeConfiguration', robot.centerOfMass',[0 m*g 0], simTime/(N-1)]';
+IC = [robot.homeConfiguration',[0,0,0], robot.centerOfMass',zeros(1,6), simTime/(N-1)]';
 final_angle = [0,0,0]*pi/180;
-FC = [final_angle,centerOfMass(robot,final_angle')',[0 m*g 0],0]';
+FC = [final_angle,[0,0,0],centerOfMass(robot,final_angle')',zeros(1,6),0]';
 xInit = guess_solution(IC,FC); 
 numDecVar = length(xInit);
 numState  = length(IC); 
 [xLow, xUpp] = setStateBoundaries(numDecVar,IC,FC);
 
 
-usrfun = 'conscomreddim';
-conseqno=1; %how many constraint equations are there? check from cons file
+usrfun = 'conscomdmev2';
+conseqno=4; %how many constraint equations are there? check from cons file
 constraint_no= (N-1)*(3*conseqno)+1;
 
-Flow = [ 0;            %lowB bound of the cost (final time)
+Flow = [ 0;            %lowB bound of the total cost
          zeros(constraint_no,1)]; %lowB of the dynamics of x y and v (each size N)
-% Flow(7:18:end)=-1;%Change to fit DME constraint
-% Flow(8:18:end)=-1;
-% Flow(9:18:end)=-1;
+% Flow(13:13:end)=-1;%Change to fit DME constraint
+% Flow(14:13:end)=-1;
+% Flow(15:13:end)=-1;
 
-LossUpperBound = 100000;
+
+LossUpperBound = 10000000;
 Fupp = [ LossUpperBound;
          zeros(constraint_no,1) ];
-% Fupp(7:18:end)=1;%Change to fit DME constraint
-% Fupp(8:18:end)=1;
-% Fupp(9:18:end)=1;
+% Fupp(13:13:end)=1;
+% Fupp(14:13:end)=1;
+% Fupp(15:13:end)=1;
+
 
 
 %This little 4-line block of setting variables for Snopt are not used very
@@ -63,7 +65,7 @@ tic                 %We are going to time snopt
 				                     ObjAdd,ObjRow,A,iAfun,jAvar,  ...
 				                     iGfun,jGvar,usrfun );
 runTime=toc        %we are timing snopt
-
+trajKnots = zeros(numState,N);
 for i=1:N
     trajKnots(:,i) = xOpt((i-1)*numState+1:i*numState);
 end

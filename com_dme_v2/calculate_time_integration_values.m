@@ -1,6 +1,6 @@
 function t = calculate_time_integration_values(t)
 global m g N
-t = round_time(t,10);
+
 s = size(t,1);
 t(s+1:s+9,1) = zeros(9,1);
 %%t{length(t)}(s+1:s+9) = zeros(9,1);

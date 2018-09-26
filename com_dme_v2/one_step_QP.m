@@ -1,5 +1,5 @@
-function [torques, lambdas] = one_step_QP(q, dq, new_acc, J_com, Jcomdot)
-global robot m
+function [ddqs,ddrs,torques, lambdas,DME_value] = one_step_QP(q, dq, new_acc, J_com, Jcomdot)
+global robot m g
 options =  optimoptions('fmincon','Display','off');
 J_dash=[-J_com eye(3)];
    
@@ -19,7 +19,7 @@ J_dash=[-J_com eye(3)];
    G=gravityTorque(robot,q);
    hh=C+G;
    h = [hh;
-        zeros(3,1)];
+        [0;-m*g;0]];
      
    S =[1 0 0 0 0 0;
        0 1 0 0 0 0;
@@ -44,6 +44,10 @@ J_dash=[-J_com eye(3)];
    
    
    [x,fval,exitflag,output,lambda]=quadprog(W_diag,f,[],[],A,B,lb,ub,[],options);
+   
+   ddqs = [x(1);x(2);x(3)];
+   ddrs = [x(4);x(5);x(6)];
    torques = [x(7); x(8); x(9)];
    lambdas = [x(10); x(11); x(12)];
+   DME_value = get_DME_ellipsoid(J_com,L,H,C,G,k,ddrs)
 end
